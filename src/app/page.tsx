@@ -1,65 +1,139 @@
-import Image from "next/image";
+"use client";
+
+import { Button } from "@/components/ui/button";
+import {
+    Card,
+    CardContent,
+    CardDescription,
+    CardHeader,
+    CardTitle,
+} from "@/components/ui/card";
+import Link from "next/link";
+import { useSession } from "@/auth/provider";
+import { signOutWithForm } from "@/auth/server-actions";
 
 export default function Home() {
-  return (
-    <div className="flex min-h-screen items-center justify-center bg-zinc-50 font-sans dark:bg-black">
-      <main className="flex min-h-screen w-full max-w-3xl flex-col items-center justify-between py-32 px-16 bg-white dark:bg-black sm:items-start">
-        <Image
-          className="dark:invert"
-          src="/next.svg"
-          alt="Next.js logo"
-          width={100}
-          height={20}
-          priority
-        />
-        <div className="flex flex-col items-center gap-6 text-center sm:items-start sm:text-left">
-          <h1 className="max-w-xs text-3xl font-semibold leading-10 tracking-tight text-black dark:text-zinc-50">
-            To get started, edit the page.tsx file.
-          </h1>
-          <p className="max-w-md text-lg leading-8 text-zinc-600 dark:text-zinc-400">
-            Looking for a starting point or more instructions? Head over to{" "}
-            <a
-              href="https://vercel.com/templates?framework=next.js&utm_source=create-next-app&utm_medium=appdir-template-tw&utm_campaign=create-next-app"
-              className="font-medium text-zinc-950 dark:text-zinc-50"
-            >
-              Templates
-            </a>{" "}
-            or the{" "}
-            <a
-              href="https://nextjs.org/learn?utm_source=create-next-app&utm_medium=appdir-template-tw&utm_campaign=create-next-app"
-              className="font-medium text-zinc-950 dark:text-zinc-50"
-            >
-              Learning
-            </a>{" "}
-            center.
-          </p>
+    const session = useSession();
+
+    return (
+        <div className="min-h-screen bg-gradient-to-br from-stone-50 to-stone-100">
+            <main className="container mx-auto px-4 py-8 max-w-md">
+                <div className="space-y-8">
+                    {/* 헤더 */}
+                    <div className="text-center space-y-2 pt-8">
+                        <h1 className="text-4xl font-bold text-stone-900">
+                            살아봄
+                        </h1>
+                        <p className="text-stone-600">
+                            실제 살았던 집에 대한 커피챗을 신청하세요
+                        </p>
+                    </div>
+
+                    {session?.user ? (
+                        /* 로그인된 사용자 */
+                        <Card className="shadow-lg">
+                            <CardHeader>
+                                <CardTitle className="text-2xl">
+                                    환영합니다! 👋
+                                </CardTitle>
+                                <CardDescription>
+                                    {session.user.email}로 로그인되었습니다.
+                                </CardDescription>
+                            </CardHeader>
+                            <CardContent className="space-y-4">
+                                <div className="space-y-2">
+                                    <p className="text-sm text-stone-600">
+                                        {session.user.name || "사용자"}님,
+                                        살아봄을 시작해보세요!
+                                    </p>
+                                </div>
+                                <div className="flex gap-2">
+                                    <Link href="/dashboard" className="flex-1">
+                                        <Button className="w-full h-12 text-base">
+                                            대시보드
+                                        </Button>
+                                    </Link>
+                                    <form
+                                        action={signOutWithForm}
+                                        className="flex-1"
+                                    >
+                                        <Button
+                                            variant="outline"
+                                            className="w-full h-12 text-base"
+                                            type="submit"
+                                        >
+                                            로그아웃
+                                        </Button>
+                                    </form>
+                                </div>
+                            </CardContent>
+                        </Card>
+                    ) : (
+                        /* 로그인되지 않은 사용자 */
+                        <Card className="shadow-lg">
+                            <CardHeader>
+                                <CardTitle className="text-2xl">
+                                    환영합니다! 👋
+                                </CardTitle>
+                                <CardDescription>
+                                    살아봄에 오신 것을 환영합니다. 로그인하여
+                                    시작하세요.
+                                </CardDescription>
+                            </CardHeader>
+                            <CardContent className="space-y-4">
+                                <Link href="/login" className="block">
+                                    <Button className="w-full h-12 text-base">
+                                        로그인
+                                    </Button>
+                                </Link>
+                                <Link href="/register" className="block">
+                                    <Button
+                                        variant="outline"
+                                        className="w-full h-12 text-base"
+                                    >
+                                        회원가입
+                                    </Button>
+                                </Link>
+                            </CardContent>
+                        </Card>
+                    )}
+
+                    {/* 기능 소개 */}
+                    <div className="space-y-4">
+                        <h2 className="text-xl font-semibold text-stone-900">
+                            주요 기능
+                        </h2>
+                        <div className="space-y-3">
+                            <Card>
+                                <CardContent className="pt-6">
+                                    <div className="space-y-2">
+                                        <h3 className="font-semibold text-stone-900">
+                                            🏠 실제 거주 경험 공유
+                                        </h3>
+                                        <p className="text-sm text-stone-600">
+                                            실제로 살았던 집에 대한 솔직한
+                                            경험을 공유하세요.
+                                        </p>
+                                    </div>
+                                </CardContent>
+                            </Card>
+                            <Card>
+                                <CardContent className="pt-6">
+                                    <div className="space-y-2">
+                                        <h3 className="font-semibold text-stone-900">
+                                            ☕ 커피챗 신청
+                                        </h3>
+                                        <p className="text-sm text-stone-600">
+                                            관심 있는 집에 대해 커피챗을
+                                            신청하고 정보를 얻어보세요.
+                                        </p>
+                                    </div>
+                                </CardContent>
+                            </Card>
+                        </div>
+                    </div>
+                </div>
+            </main>
         </div>
-        <div className="flex flex-col gap-4 text-base font-medium sm:flex-row">
-          <a
-            className="flex h-12 w-full items-center justify-center gap-2 rounded-full bg-foreground px-5 text-background transition-colors hover:bg-[#383838] dark:hover:bg-[#ccc] md:w-[158px]"
-            href="https://vercel.com/new?utm_source=create-next-app&utm_medium=appdir-template-tw&utm_campaign=create-next-app"
-            target="_blank"
-            rel="noopener noreferrer"
-          >
-            <Image
-              className="dark:invert"
-              src="/vercel.svg"
-              alt="Vercel logomark"
-              width={16}
-              height={16}
-            />
-            Deploy Now
-          </a>
-          <a
-            className="flex h-12 w-full items-center justify-center rounded-full border border-solid border-black/[.08] px-5 transition-colors hover:border-transparent hover:bg-black/[.04] dark:border-white/[.145] dark:hover:bg-[#1a1a1a] md:w-[158px]"
-            href="https://nextjs.org/docs?utm_source=create-next-app&utm_medium=appdir-template-tw&utm_campaign=create-next-app"
-            target="_blank"
-            rel="noopener noreferrer"
-          >
-            Documentation
-          </a>
-        </div>
-      </main>
-    </div>
-  );
+    );
 }
